@@ -19,7 +19,21 @@ contract Marketplace {
     * ===== NFT REGISTRY, FEES, ROYALTIES
     * ============================ */
 
-    constructor() {}
+    uint public storedData;
+    address owner = msg.sender;
+
+    constructor(uint _num) {
+        storedData = _num;
+    }
+
+    function getStoredData() public view returns (uint) {
+        return storedData;
+    }
+
+    function setStoredData(uint x) public {
+        require(msg.sender == owner, "Not the owner!");
+        storedData = x;
+    }
 
     // register given NFT collection
     // nftCollection - address of ERC721 contract
