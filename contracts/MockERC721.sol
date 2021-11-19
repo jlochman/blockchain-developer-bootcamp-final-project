@@ -1,1 +1,0 @@
-// this will be the simplest possible implementation of ERC 721

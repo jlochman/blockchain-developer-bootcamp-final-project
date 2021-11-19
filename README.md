@@ -1,5 +1,4 @@
 # blockchain-developer-bootcamp-final-project
-
 With the booming popularity of NFTs, I'd like to create a simple NFT marketplace.
 
 Marketplace will come with a single ERC-721 contract whose address will be hardcoded in the marketplace (addresses of its tokens may be needed to hardcode as well).
@@ -12,3 +11,15 @@ There will be two types of trades
 2. **Auction** allowing the owner to set starting price and the end time of the auction.
 
 I'd like to implement marketplace fee and royalties distribution so if the NFT is sold for 1 ETH, then 0.02 ETH goes to an address of the marketplace, 0.03 ETH to an address of the creator and 0.95 ETH to the seller.
+
+## Update
+I think the suggested model gives too much power to NFT marketplace (despite the fact it copies how NFT marketplaces work today). These concerns have been discussed among Callisto community and lead to a proposal to extend ERC721 contract to have some marketplace features implemented in NFT contract directly.
+
+The extended contract is called [CallistoNFT](https://callisto.network/callistonft-advanced-standard/) and tries to deal with following
+
+> - **Built-in “trades”** — there is no need to rely on third-party marketplaces for NFTs now, you can express your willingness to sell / buy a specific NFT right through the token contract!
+> - **Monetization for NFT creators**, not third party marketplaces — NFT developers / creators can now earn % fee on these built-in trades instead of the marketplaces that traditionally did this.
+> - **Communication model for smart-contracts** — “events” are a very standard practice in programming and the key feature for programm-to-programm communication models. However ERC721 lacks this feature. New standard addresses this to open up wider automatisation opportunities.
+> - **Standardized properties** — NFTs typically represent some unique objects and store their properties (for example bitmap for a picture or website link). This unique properties are implementaiton-specific in ERC721. CallistoNFT makes a step towards standardizing this features.
+
+In this project, I deal with suggestions 1 and 2 because they directly address features, I want to implemennt.
