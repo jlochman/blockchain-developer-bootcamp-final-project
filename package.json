@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "openzeppelin-solidity": "4.3.3"
+  },
+  "name": "blockchain-developer-bootcamp-final-project",
+  "description": "With the booming popularity of NFTs, I'd like to create a simple NFT marketplace.",
+  "version": "1.0.0",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlochman/blockchain-developer-bootcamp-final-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlochman/blockchain-developer-bootcamp-final-project/issues"
+  },
+  "homepage": "https://github.com/jlochman/blockchain-developer-bootcamp-final-project#readme"
+}
