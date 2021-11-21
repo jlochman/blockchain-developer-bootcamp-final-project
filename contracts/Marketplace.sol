@@ -43,7 +43,7 @@ contract Marketplace is Ownable {
     }
 
     modifier validFee(uint256 fee) {
-        require(fee > 0 && fee < 500, "fee must be > 0 & < 500");
+        require(fee > 0 && fee <= 500, "fee must be > 0 & <= 500");
         _;
     }
 
@@ -60,6 +60,10 @@ contract Marketplace is Ownable {
 
         emit CollectionRegistered(collection);
         emit CollectionFeeSet(collection, fee);
+    }
+
+    function collectionRegistered(MockNFT collection) public view returns (bool) {
+        return _collections[address(collection)].fee > 0;
     }
 
     function setCollectionFee(MockNFT collection, uint256 fee) public onlyOwner validFee(fee) onlyRegisteredCollections(collection) {
@@ -109,6 +113,41 @@ contract Marketplace is Ownable {
         emit AuctionCreated(collection, tokenId, startPrice, auctionTimeSeconds, msg.sender);
     }
 
+    function auctionOpened(MockNFT collection, uint256 tokenId) public view returns (bool) {
+        return _collections[address(collection)].auctions[tokenId].startPrice > 0;
+    }
+
+    function getCurrentBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
+        require(auctionOpened(collection, tokenId), "auction must be opened");
+        return _collections[address(collection)].auctions[tokenId].bidderValue;   
+    }
+
+    function getMinimalBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
+        require(auctionOpened(collection, tokenId), "auction must be opened");
+        AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
+        uint256 minBid = auctionInfo.startPrice;
+        if (auctionInfo.bidderValue > 0) {
+            minBid = 11 * auctionInfo.bidderValue / 10;
+        }
+        return minBid;
+    }
+
+    function getAuctionBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
+        require(auctionOpened(collection, tokenId), "auction must be opened");
+        return _collections[address(collection)].auctions[tokenId].bidderValue;   
+    }
+
+    function getAuction(MockNFT collection, uint256 tokenId) public view 
+        returns (uint256 started, uint256 ends, uint256 startPrice,  address bidder, uint256 bidderValue) {
+            require(auctionOpened(collection, tokenId), "auction must be opened");
+            AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
+            started = auctionInfo.started;
+            ends= auctionInfo.ends;
+            startPrice = auctionInfo.startPrice;
+            bidder = auctionInfo.bidder;
+            bidderValue = auctionInfo.bidderValue;
+    }
+
     function cancelAuction(MockNFT collection, uint256 tokenId) public onlyRegisteredCollections(collection) {
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
         require(auctionInfo.tokenOwner == msg.sender, "only auction creator can cancel it");
@@ -124,10 +163,7 @@ contract Marketplace is Ownable {
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
         require(auctionInfo.started > 0 && block.timestamp < auctionInfo.ends, "auction is not active");
 
-        uint256 minBid = auctionInfo.startPrice;
-        if (auctionInfo.bidderValue > 0) {
-            minBid = 11 * auctionInfo.bidderValue / 10;
-        }
+        uint256 minBid = getMinimalBid(collection, tokenId);
         require(msg.value >= minBid, "bid value not sufficient");
 
         if (auctionInfo.bidder != address(0)) {
@@ -145,8 +181,8 @@ contract Marketplace is Ownable {
         require(block.timestamp > auctionInfo.ends, "auction hasn't ended yet");
         require(msg.sender == auctionInfo.bidder, "only auction winner can claim reward");
 
-        uint256 paidToCreators = collection.rewardCreators(auctionInfo.bidderValue);
-        uint256 paidToMarketplace = auctionInfo.bidderValue * _collections[address(collection)].fee / 1000;
+        uint256 paidToCreators = collection.rewardCreators{value:9000}(auctionInfo.bidderValue);
+        uint256 paidToMarketplace = auctionInfo.bidderValue * _collections[address(collection)].fee / 10000;
         uint256 payToOwner = auctionInfo.bidderValue - paidToCreators - paidToMarketplace;
 
         (bool ownerPaid, /* bytes memory data */) = payable(auctionInfo.tokenOwner).call{value: payToOwner}("");

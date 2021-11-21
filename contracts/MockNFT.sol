@@ -26,6 +26,8 @@ contract MockNFT is ERC721, Ownable {
     event RyoaltyPayment(address creator, uint256 roaylty);
     event OwnerPayment(address owner, uint256 amount);
 
+    event Test(uint256 msg);
+
     modifier onlyTokenOwner(uint256 tokenId) {
         require(msg.sender == ownerOf(tokenId), "Sender is not owner of the token");
         _;
