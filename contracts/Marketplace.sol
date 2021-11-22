@@ -181,9 +181,11 @@ contract Marketplace is Ownable {
         require(block.timestamp > auctionInfo.ends, "auction hasn't ended yet");
         require(msg.sender == auctionInfo.bidder, "only auction winner can claim reward");
 
-        uint256 paidToCreators = collection.rewardCreators{value:9000}(auctionInfo.bidderValue);
+        uint256 payToCreators = auctionInfo.bidderValue * collection.getRoyalties() / 10000;
+        (bool creatorsPaid, /* bytes memory data */) = payable(address(collection)).call{value: payToCreators}("");
+        require(creatorsPaid, "Tokem contract didn't pay roaylties");
         uint256 paidToMarketplace = auctionInfo.bidderValue * _collections[address(collection)].fee / 10000;
-        uint256 payToOwner = auctionInfo.bidderValue - paidToCreators - paidToMarketplace;
+        uint256 payToOwner = auctionInfo.bidderValue - payToCreators - paidToMarketplace;
 
         (bool ownerPaid, /* bytes memory data */) = payable(auctionInfo.tokenOwner).call{value: payToOwner}("");
         require(ownerPaid, "owner hasn't been paid");
@@ -193,6 +195,9 @@ contract Marketplace is Ownable {
 
         collection.transferFrom(address(this), msg.sender, tokenId);
         emit AuctionWon(collection, tokenId, msg.sender, auctionInfo.bidderValue);
-    }     
+    }   
+
+    // TODO: owner should be able to withdraw fees marketplace gathered 
+    // note: fees will be lower than contract's balance because of active bids which are held by contract
 
 }

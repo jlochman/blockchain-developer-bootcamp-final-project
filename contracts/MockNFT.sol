@@ -12,8 +12,9 @@ contract MockNFT is ERC721, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     // creators obtaining shares, key: creator address, value: share in basis points (100=1%)
-    mapping(address => uint16) private _creatorShares;
+    mapping(address => uint16) private _royalties;
     address[] private _creators;
+    uint16 private _royaltiesSum;
 
     // token offers, key: tokenId, value: price for which the token is offered
     mapping(uint256 => uint256) private _tokenOffers;
@@ -40,6 +41,15 @@ contract MockNFT is ERC721, Ownable {
 
     constructor() ERC721("MockNFT", "MOCK") {}
 
+    receive() external payable {
+        if (_royaltiesSum == 0) {
+            (bool ownerPaid, /* bytes memory data */) = payable(owner()).call{value: msg.value}("");
+            require(ownerPaid, "problem paying the owner");
+        } else {
+            rewardCreators(msg.value);
+        }
+    }
+
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -55,19 +65,25 @@ contract MockNFT is ERC721, Ownable {
 
         // remove current shares
         for (uint8 i=0; i < _creators.length; i++) {
-            delete _creatorShares[_creators[i]];
+            delete _royalties[_creators[i]];
         }
 
         // create new shares
+        _royaltiesSum = 0;
         for (uint8 i=0; i < creators.length; i++) {
-            _creatorShares[creators[i]] = royalties[i];
+            _royalties[creators[i]] = royalties[i];
+            _royaltiesSum += royalties[i];
             emit SetRoyalty(creators[i], royalties[i]);
         }
         _creators = creators;
     }
 
     function getRoyalty(address creator) public view returns (uint16) {
-        return _creatorShares[creator];
+        return _royalties[creator];
+    }
+
+    function getRoyalties() public view returns (uint16) {
+        return _royaltiesSum;
     }
 
     function setOfferPrice(uint256 tokenId, uint256 sellPrice) public onlyTokenOwner(tokenId) {
@@ -90,12 +106,13 @@ contract MockNFT is ERC721, Ownable {
         emit OfferAccepted(tokenId, _tokenOffers[tokenId], msg.sender, ownerOf(tokenId));
 
         // pay creators
-        uint256 paidToCreators = rewardCreators(_tokenOffers[tokenId]);
+        uint256 payToCreators = _tokenOffers[tokenId] * _royaltiesSum / 10000;
+        rewardCreators(payToCreators);
         
         // pay owners
-        (bool ownerPaid, /* bytes memory data */) = payable(ownerOf(tokenId)).call{value: _tokenOffers[tokenId] - paidToCreators}("");
+        (bool ownerPaid, /* bytes memory data */) = payable(ownerOf(tokenId)).call{value: _tokenOffers[tokenId] - payToCreators}("");
         require(ownerPaid, "Owner rejected ETH sell transfer");
-        emit OwnerPayment(ownerOf(tokenId), _tokenOffers[tokenId] - paidToCreators);
+        emit OwnerPayment(ownerOf(tokenId), _tokenOffers[tokenId] - payToCreators);
 
         // return overpaid value
         if (msg.value - _tokenOffers[tokenId] > 0) {
@@ -107,19 +124,26 @@ contract MockNFT is ERC721, Ownable {
         _transfer(ownerOf(tokenId), msg.sender, tokenId);
     }
 
-    function rewardCreators(uint256 totalPrice) public payable returns (uint256 paidToCreators) {
-        for (uint8 i = 0; i < _creators.length; i++) {
-            uint256 toPay = totalPrice / 10000 * _creatorShares[_creators[i]];
+    function rewardCreators(uint256 reward) public payable {
+        require(_royaltiesSum != 0, "no creators set");
+
+        uint256 paid = 0;
+        for (uint8 i = 1; i < _creators.length; i++) { //
+            uint256 toPay = reward * _royalties[_creators[i]] / _royaltiesSum;
             (bool creatorPaid, /* bytes memory data */) = payable(_creators[i]).call{value: toPay}("");
             require(creatorPaid, "Creator rejected ETH royalty transfer");
             emit RyoaltyPayment(_creators[i], toPay);
-            paidToCreators += toPay;
+            paid += toPay;
         }
+
+        (bool firstCreatorPaid, /* bytes memory data */) = payable(_creators[0]).call{value: reward - paid}("");
+        require(firstCreatorPaid, "First Creator rejected ETH royalty transfer");
+        emit RyoaltyPayment(_creators[0], reward - paid);
     }
 
     function _transfer(address from,address to,uint256 tokenId) internal override {
         super._transfer(from, to, tokenId);
         delete _tokenOffers[tokenId];
-    }
+    } 
 
 }

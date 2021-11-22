@@ -6,7 +6,7 @@ const MockNFT = artifacts.require("MockNFT");
  * See docs: https://www.trufflesuite.com/docs/truffle/testing/writing-tests-in-javascript
  */
 contract("MockNFT", function (accounts) {
-  
+
   let mockNft;
   let [owner, alice, bob] = accounts;
   const toBN = web3.utils.toBN;
@@ -14,7 +14,7 @@ contract("MockNFT", function (accounts) {
   before(async () => {
     mockNft = await MockNFT.deployed();
   });
-  
+
   it("there are no tokens", async function () {
     assert.equal(await mockNft.balanceOf(owner), 0, `tokenBalance of owner should be 0`);
     assert.equal(await mockNft.balanceOf(alice), 0, `tokenBalance of alice should be 0`);
@@ -23,13 +23,13 @@ contract("MockNFT", function (accounts) {
 
   describe("Mint tokens", () => {
 
-    it ("owner should mint token for himself", async () => {
-        await mockNft.safeMint(owner);
-        const tokenBalance = await mockNft.balanceOf(owner);
-        assert.equal(tokenBalance, 1, `tokenBalance of owner should be 1 but is ${tokenBalance}`);
+    it("owner should mint token for himself", async () => {
+      await mockNft.safeMint(owner);
+      const tokenBalance = await mockNft.balanceOf(owner);
+      assert.equal(tokenBalance, 1, `tokenBalance of owner should be 1 but is ${tokenBalance}`);
     });
 
-    it ("owner should mint tokens for others", async () => {
+    it("owner should mint tokens for others", async () => {
       await mockNft.safeMint(alice);
       await mockNft.safeMint(bob);
 
@@ -39,10 +39,10 @@ contract("MockNFT", function (accounts) {
       assert.equal(tokenBalanceBob, 1, `tokenBalance of Bob should be 1 but is ${tokenBalanceBob}`);
     });
 
-    it ("non-owner shouldn't be able to mint tokens", async () => {
+    it("non-owner shouldn't be able to mint tokens", async () => {
       try {
-        await mockNft.safeMint(alice, {from: alice});
-      } catch (err) {}
+        await mockNft.safeMint(alice, { from: alice });
+      } catch (err) { }
       const tokenBalance = await mockNft.balanceOf(alice);
       assert.equal(tokenBalance, 1, `tokenBalance of Alice should be 1 but is ${tokenBalance}`);
     });
@@ -52,7 +52,7 @@ contract("MockNFT", function (accounts) {
 
   describe("Set Roaylties", () => {
 
-    it ("owner should set royalties", async () => {
+    it("owner should set royalties", async () => {
       await mockNft.setRoyalties([owner, alice], [100, 50]);
 
       const ownerRoyalty = await mockNft.getRoyalty(owner);
@@ -63,39 +63,45 @@ contract("MockNFT", function (accounts) {
       assert.equal(bobRoyalty, 0, `bobRoyalty should be 0 but is ${bobRoyalty}`);
     });
 
-    it ("non-owner shouldn't be able to set royalties", async () => {
+    it("royalty sum is set correctly", async () => {
+      const royaltiesSum = await mockNft.getRoyalties();
+      assert.equal(royaltiesSum, 150, `royaltiesSum should be 150 but is ${royaltiesSum}`);
+    });
+
+
+    it("non-owner shouldn't be able to set royalties", async () => {
       try {
-        await mockNft.setRoyalties([owner, alice], [50, 100], {from: alice});
-      } catch (err) {}
+        await mockNft.setRoyalties([owner, alice], [50, 100], { from: alice });
+      } catch (err) { }
       const ownerRoyalty = await mockNft.getRoyalty(owner);
       assert.equal(ownerRoyalty, 100, `royalty of owner should be 100 but is ${ownerRoyalty}`);
     });
 
-    it ("royalty cannot be bigger than 5%", async () => {
+    it("royalty cannot be bigger than 5%", async () => {
       try {
         await mockNft.setRoyalties([owner, alice], [500, 100]);
-      } catch (err) {}
+      } catch (err) { }
       const ownerRoyalty = await mockNft.getRoyalty(owner);
       assert.equal(ownerRoyalty, 100, `royalty of owner should be 100 but is ${ownerRoyalty}`);
     });
 
-    it ("royalty cannot be set for more than 5 accounts", async () => {
+    it("royalty cannot be set for more than 5 accounts", async () => {
       try {
         await mockNft.setRoyalties([owner, alice, bob, accounts[3], accounts[4], accounts[5]], [500, 50, 50, 50, 50, 50]);
-      } catch (err) {}
+      } catch (err) { }
       const ownerRoyalty = await mockNft.getRoyalty(owner);
       assert.equal(ownerRoyalty, 100, `royalty of owner should be 100 but is ${ownerRoyalty}`);
     });
 
-    it ("input data missmatch", async () => {
+    it("input data missmatch", async () => {
       try {
         await mockNft.setRoyalties([owner, alice], [500, 50, 50]);
-      } catch (err) {}
+      } catch (err) { }
       const ownerRoyalty = await mockNft.getRoyalty(owner);
       assert.equal(ownerRoyalty, 100, `royalty of owner should be 100 but is ${ownerRoyalty}`);
     });
 
-    it ("owner should update royalties", async () => {
+    it("owner should update royalties", async () => {
       await mockNft.setRoyalties([owner, bob], [200, 100]);
 
       const ownerRoyalty = await mockNft.getRoyalty(owner);
@@ -110,44 +116,44 @@ contract("MockNFT", function (accounts) {
 
 
   describe("Modify Offers", () => {
-    
-    it ("there are no offers", async () => {
+
+    it("there are no offers", async () => {
       assert.equal(await mockNft.getOfferPrice(0), 0, `price for tokenId=0 should be 0`);
       assert.equal(await mockNft.getOfferPrice(1), 0, `price for tokenId=1 should be 0`);
       assert.equal(await mockNft.getOfferPrice(2), 0, `price for tokenId=2 should be 0`);
     });
 
-    it ("token owner can create an offer", async () => {
+    it("token owner can create an offer", async () => {
       await mockNft.setOfferPrice(0, 10000);
 
       const token0OfferPrice = await mockNft.getOfferPrice(0);
       assert.equal(token0OfferPrice, 10000, `token0OfferPrice should be 10000 but is ${token0OfferPrice}`);
     });
 
-    it ("token owner can modify an offer", async () => {
+    it("token owner can modify an offer", async () => {
       await mockNft.setOfferPrice(0, 15000);
 
       const token0OfferPrice = await mockNft.getOfferPrice(0);
       assert.equal(token0OfferPrice, 15000, `token0OfferPrice should be 15000 but is ${token0OfferPrice}`);
     });
 
-    it ("only token owner can create an offer", async () => {
+    it("only token owner can create an offer", async () => {
       try {
-        await mockNft.setOfferPrice(0, 5000, {from: alice});
-      } catch (err) {}
+        await mockNft.setOfferPrice(0, 5000, { from: alice });
+      } catch (err) { }
       const token0OfferPrice = await mockNft.getOfferPrice(0);
       assert.equal(token0OfferPrice, 15000, `token0OfferPrice should be 15000 but is ${token0OfferPrice}`);
     });
 
-    it ("only token owner can cancel an offer", async () => {
+    it("only token owner can cancel an offer", async () => {
       try {
-        await mockNft.cancelOffer(0, {from: alice});
-      } catch (err) {}
+        await mockNft.cancelOffer(0, { from: alice });
+      } catch (err) { }
       const token0OfferPrice = await mockNft.getOfferPrice(0);
       assert.equal(token0OfferPrice, 15000, `token0OfferPrice should be 15000 but is ${token0OfferPrice}`);
     });
 
-    it ("token owner can cancel an offer", async () => {
+    it("token owner can cancel an offer", async () => {
       await mockNft.cancelOffer(0);
 
       const token0OfferPrice = await mockNft.getOfferPrice(0);
@@ -159,40 +165,40 @@ contract("MockNFT", function (accounts) {
 
   describe("Trade Tokens", () => {
 
-    it ("token transfered", async () => {
+    it("token transfered", async () => {
       assert.equal(await mockNft.balanceOf(owner), 1, `tokenBalance of owner should be 1`);
       assert.equal(await mockNft.balanceOf(alice), 1, `tokenBalance of Alice should be 1`);
-      
+
       await mockNft.setOfferPrice(0, 10000);
-      await mockNft.acceptOffer(0, {from: alice, value: 10000});
+      await mockNft.acceptOffer(0, { from: alice, value: 10000 });
       assert.equal(await mockNft.balanceOf(owner), 0, `tokenBalance of owner should be 0`);
       assert.equal(await mockNft.balanceOf(alice), 2, `tokenBalance of Alice should be 2`);
     });
 
 
-    it ("offer cancelled", async () => {
-      await mockNft.setOfferPrice(0, 10000, {from: alice});
+    it("offer cancelled", async () => {
+      await mockNft.setOfferPrice(0, 10000, { from: alice });
       assert.equal(await mockNft.getOfferPrice(0), 10000, `offerPrice for token=0 should be 10000`);
 
-      await mockNft.acceptOffer(0, {value: 10000});
+      await mockNft.acceptOffer(0, { value: 10000 });
       assert.equal(await mockNft.getOfferPrice(0), 0, `offerPrice for token=0 should be 0`);
     });
 
-    it ("payments distributed", async () => {
+    it("payments distributed", async () => {
       await mockNft.setOfferPrice(0, 10000);
 
       const ownerInitBalance = await web3.eth.getBalance(owner);
       const aliceInitBalance = await web3.eth.getBalance(alice);
       const bobInitBalance = await web3.eth.getBalance(bob);
 
-      const receipt = await mockNft.acceptOffer(0, {from: alice, value: 10000});
+      const receipt = await mockNft.acceptOffer(0, { from: alice, value: 10000 });
       const gasUsed = receipt.receipt.gasUsed;
       const gasPrice = (await web3.eth.getTransaction(receipt.tx)).gasPrice;
 
       const ownerEndBalance = await web3.eth.getBalance(owner);
       const aliceEndBalance = await web3.eth.getBalance(alice);
       const bobEndBalance = await web3.eth.getBalance(bob);
-      
+
       // owner: +200 from royalties, +9700 from selling NFT
       const ownerBalanceChange = toBN(ownerEndBalance).sub(toBN(ownerInitBalance));
       const ownerBalanceChangeExpected = toBN(9900);
@@ -209,22 +215,22 @@ contract("MockNFT", function (accounts) {
       assert.isTrue(bobBalanceChange.eq(bobBalanceChangeExpected), `bobBalanceChange should be ${bobBalanceChangeExpected}, but is ${bobBalanceChange}`);
     });
 
-    it ("payment for non-existing order does nothing", async () => {
+    it("payment for non-existing order does nothing", async () => {
       try {
-        await mockNft.acceptOffer(5, {from: accounts[5], value: 1e18});
-      } catch (err) {}
+        await mockNft.acceptOffer(5, { from: accounts[5], value: 1e18 });
+      } catch (err) { }
       const tokensOwned = await mockNft.balanceOf(accounts[5]);
       assert.equal(tokensOwned, 0, `accounts[5] should own 0 tokens`);
-    });    
+    });
 
-    it ("insufficient payment does nothing", async () => {
-      await mockNft.setOfferPrice(0, 10000, {from: alice});
+    it("insufficient payment does nothing", async () => {
+      await mockNft.setOfferPrice(0, 10000, { from: alice });
       try {
-        await mockNft.acceptOffer(0, {value: 8000});
-      } catch (err) {}
+        await mockNft.acceptOffer(0, { value: 8000 });
+      } catch (err) { }
       const tokensOwned = await mockNft.balanceOf(owner);
       assert.equal(tokensOwned, 0, `owner should own 0 tokens`);
-    });    
+    });
 
   });
 
