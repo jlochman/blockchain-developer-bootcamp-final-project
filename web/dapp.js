@@ -1,655 +1,3 @@
-const marketplaceABI =
-  [
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "AuctionCancelled",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "startPrice",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "auctionTimeSeconds",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "AuctionCreated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "winner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "winningBid",
-          "type": "uint256"
-        }
-      ],
-      "name": "AuctionWon",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "bidder",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "bid",
-          "type": "uint256"
-        }
-      ],
-      "name": "BidPlaced",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "bidder",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "bid",
-          "type": "uint256"
-        }
-      ],
-      "name": "BidReturned",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "fee",
-          "type": "uint256"
-        }
-      ],
-      "name": "CollectionFeeSet",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        }
-      ],
-      "name": "CollectionRegistered",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "flatFee",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "payer",
-          "type": "address"
-        }
-      ],
-      "name": "FlatFeePaid",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "flatFee",
-          "type": "uint256"
-        }
-      ],
-      "name": "FlatFeeSet",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "payout",
-          "type": "uint256"
-        }
-      ],
-      "name": "OwnerPaid",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "fee",
-          "type": "uint256"
-        }
-      ],
-      "name": "registerCollection",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        }
-      ],
-      "name": "collectionRegistered",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "fee",
-          "type": "uint256"
-        }
-      ],
-      "name": "setCollectionFee",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        }
-      ],
-      "name": "getCollectionFee",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "flatFee",
-          "type": "uint256"
-        }
-      ],
-      "name": "setFlatListingFee",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getFlatListngFee",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "startPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "auctionTimeSeconds",
-          "type": "uint256"
-        }
-      ],
-      "name": "openAuction",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "auctionOpened",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getCurrentBid",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getMinimalBid",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getAuctionBid",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getAuction",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "started",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "ends",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "startPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "bidder",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "bidderValue",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "cancelAuction",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "placeBid",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract MockNFT",
-          "name": "collection",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "claimReward",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    }
-  ];
-
 const mockNftABI =
   [
     {
@@ -1350,9 +698,7 @@ const mockNftABI =
       "payable": true
     }
   ];
-
-const marketplaceAddress = '';
-const mockNftAddress = '0x590A41892f7eB4521E9d7429469865A4c123F3e8';
+const mockNftAddress = '0xF55f31f5f7962863dD52AF7965dB6dC09f708F5e';
 
 window.addEventListener('load', function () {
   let mmDetected = document.getElementById('mm-detected')
@@ -1365,8 +711,104 @@ window.addEventListener('load', function () {
   } else {
     mmDetected.innerHTML += 'MetaMask Not Available!'
   }
-
 })
+
+async function buy(tokenId, tokenPrice) {
+  console.log(`buy tokenId: ${tokenId}, tokenPrice: ${tokenPrice}`);
+
+  ethereum.request({ method: 'eth_requestAccounts' })
+  var web3 = new Web3(window.ethereum);
+  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
+  mockNft.setProvider(window.ethereum);
+
+  try {
+    const txResponse = await mockNft.methods.acceptOffer(tokenId).send({ from: ethereum.selectedAddress, value: web3.utils.toWei(String(tokenPrice), 'ether') });
+    setLastTxMsg("SUCCESS, txHash: " + txResponse.transactionHash);
+    refreshOffers();
+  } catch (err) {
+    setLastTxMsg("ERROR, " + err.message);
+  }
+}
+
+async function cancelListing(tokenId) {
+  console.log(`cancelListing tokenId: ${tokenId}`);
+
+  ethereum.request({ method: 'eth_requestAccounts' })
+  var web3 = new Web3(window.ethereum);
+  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
+  mockNft.setProvider(window.ethereum);
+
+  try {
+    const txResponse = await mockNft.methods.cancelOffer(tokenId).send({ from: etherem.selectedAddress });
+    setLastTxMsg("SUCCESS, txHash: " + txResponse.transactionHash);
+    refreshOffers();
+  } catch (err) {
+    setLastTxMsg("ERROR, " + err.message);
+  }
+}
+
+async function createListing(tokenId) {
+  const price = document.getElementById(`createListing-price-${tokenId}`).value;
+  console.log(`createListing tokenId: ${tokenId}, price: ${price}`);
+
+  ethereum.request({ method: 'eth_requestAccounts' })
+  var web3 = new Web3(window.ethereum);
+  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
+  mockNft.setProvider(window.ethereum);
+
+  try {
+    const txResponse = await mockNft.methods.setOfferPrice(tokenId, web3.utils.toWei(price, 'ether')).send({ from: ethereum.selectedAddress });
+    setLastTxMsg("SUCCESS, txHash: " + txResponse.transactionHash);
+    refreshOffers();
+  } catch (err) {
+    setLastTxMsg("ERROR, " + err.message);
+  }
+}
+
+const mmEnable = document.getElementById('mm-connect');
+mmEnable.onclick = async () => {
+  
+  
+  refreshOffers();
+}
+
+async function refreshOffers() {
+  await ethereum.request({ method: 'eth_requestAccounts' })
+  var web3 = new Web3(window.ethereum)
+  
+  var mmCurrentAccount = document.getElementById('mm-current-account');
+  mmCurrentAccount.innerHTML = 'Account: ' + ethereum.selectedAddress;
+  var mmCurrentAccountBalance = document.getElementById('mm-current-account-balance');
+  mmCurrentAccountBalance.innerHTML = 'Balance: ' + ((await web3.eth.getBalance(ethereum.selectedAddress)) * 1e-18) + ' ETH';
+
+  let buyNowContainer = document.getElementById('buy-now-container');
+  buyNowContainer.innerHTML = "<h2>Buy now</h2>";
+  let myItemsContainer = document.getElementById('items-container');
+  myItemsContainer.innerHTML = "<h2>My Items</h2>";
+
+  var web3 = new Web3(window.ethereum);
+  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
+  mockNft.setProvider(window.ethereum)
+
+  for (let i = 0; i < 8; i++) {
+    try {
+      var owner = await mockNft.methods.ownerOf(i).call();
+      var priceWei = await mockNft.methods.getOfferPrice(i).call();
+      var priceEth = priceWei * 1e-18;
+      if (priceWei == 0) {
+        if (owner.toUpperCase() == ethereum.selectedAddress.toUpperCase()) {
+          myItemsContainer.innerHTML += getMyItemDiv(i);
+        }
+      } else {
+        if (owner.toUpperCase() == ethereum.selectedAddress.toUpperCase()) {
+          buyNowContainer.innerHTML += getCancelListingDiv(i, priceEth);
+        } else {
+          buyNowContainer.innerHTML += getBuyDiv(i, priceEth);
+        }
+      }
+    } catch (err) { return }
+  }
+}
 
 function getBuyDiv(tokenId, tokenPrice) {
   return `
@@ -1399,83 +841,6 @@ function getMyItemDiv(tokenId) {
   </div>`;
 }
 
-function buy(tokenId, tokenPrice) {
-  console.log(`buy tokenId: ${tokenId}, tokenPrice: ${tokenPrice}`);
-
-  ethereum.request({ method: 'eth_requestAccounts' })
-  var web3 = new Web3(window.ethereum);
-  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
-  mockNft.setProvider(window.ethereum);
-
-  mockNft.methods.acceptOffer(tokenId).send({ from: ethereum.selectedAddress, value: web3.utils.toWei(String(tokenPrice), 'ether') });
-}
-
-function cancelListing(tokenId) {
-  console.log(`cancelListing tokenId: ${tokenId}`);
-
-  ethereum.request({ method: 'eth_requestAccounts' })
-  var web3 = new Web3(window.ethereum);
-  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
-  mockNft.setProvider(window.ethereum);
-
-  mockNft.methods.cancelOffer(tokenId).send({ from: etherem.selectedAddress });
-}
-
-function createListing(tokenId) {
-  const price = document.getElementById(`createListing-price-${tokenId}`).value;
-  console.log(`createListing tokenId: ${tokenId}, price: ${price}`);
-
-  ethereum.request({ method: 'eth_requestAccounts' })
-  var web3 = new Web3(window.ethereum);
-  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
-  mockNft.setProvider(window.ethereum);
-
-  mockNft.methods.setOfferPrice(tokenId, web3.utils.toWei(price, 'ether')).send({ from: ethereum.selectedAddress });
-}
-
-const mmEnable = document.getElementById('mm-connect');
-mmEnable.onclick = async () => {
-  await ethereum.request({ method: 'eth_requestAccounts' })
-  var web3 = new Web3(window.ethereum)
-
-  var mmCurrentAccount = document.getElementById('mm-current-account');
-  mmCurrentAccount.innerHTML = 'Account: ' + ethereum.selectedAddress;
-
-  var mmCurrentAccountBalance = document.getElementById('mm-current-account-balance');
-  mmCurrentAccountBalance.innerHTML = 'Balance: ' + ((await web3.eth.getBalance(ethereum.selectedAddress)) * 1e-18) + ' ETH';
-
-  let buyNowContainer = document.getElementById('buy-now-container');
-  buyNowContainer.innerHTML = "<h2>Buy now</h2>";
-  //buyNowContainer.innerHTML += getBuyDiv(0, 0.1);
-  //buyNowContainer.innerHTML += getCancelListingDiv(1, 0.2);
-
-  let myItemsContainer = document.getElementById('items-container');
-  myItemsContainer.innerHTML = "<h2>My Items</h2>";
-  //myItemsContainer.innerHTML += getMyItemDiv(10);
-
-  var web3 = new Web3(window.ethereum);
-  const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
-  mockNft.setProvider(window.ethereum)
-
-  for (let i = 0; i < 8; i++) {
-    var owner = await mockNft.methods.ownerOf(i).call();
-    var priceWei = await mockNft.methods.getOfferPrice(i).call();
-    var priceEth = priceWei * 1e-18;
-    if (priceWei == 0) {
-      if (owner.toUpperCase() == ethereum.selectedAddress.toUpperCase()) {
-          myItemsContainer.innerHTML += getMyItemDiv(i);
-      }
-    } else {
-      if(owner.toUpperCase() == ethereum.selectedAddress.toUpperCase()) {
-        buyNowContainer.innerHTML += getCancelListingDiv(i, priceEth);
-      } else {
-        buyNowContainer.innerHTML += getBuyDiv(i, priceEth);
-      }
-    }
-    console.log(`i:${i}, owner: ${owner}, priceEth: ${priceEth}, owner:${owner.toUpperCase() == ethereum.selectedAddress.toUpperCase()}`);
-  }
-}
-
 const mmMint = document.getElementById('mm-mint');
 mmMint.onclick = async () => {
   await ethereum.request({ method: 'eth_requestAccounts' })
@@ -1484,9 +849,14 @@ mmMint.onclick = async () => {
   const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
   mockNft.setProvider(window.ethereum);
 
-  await mockNft.methods.safeMint(ethereum.selectedAddress).send({ from: ethereum.selectedAddress});
+  try {
+    const txResponse = await mockNft.methods.safeMint(ethereum.selectedAddress).send({ from: ethereum.selectedAddress });
+    setLastTxMsg("SUCCESS, txHash: " + txResponse.transactionHash);
+    refreshOffers();
+  } catch (err) {
+    setLastTxMsg("ERROR, " + err.message);
+  }
 }
-
 
 const mmRoyalties = document.getElementById('mm-royalties');
 mmRoyalties.onclick = async () => {
@@ -1496,5 +866,10 @@ mmRoyalties.onclick = async () => {
   const mockNft = new web3.eth.Contract(mockNftABI, mockNftAddress);
   mockNft.setProvider(window.ethereum);
 
-  await mockNft.methods.setRoyalties([ethereum.selectedAddress], [400]).send({ from: ethereum.selectedAddress});
+  await mockNft.methods.setRoyalties([ethereum.selectedAddress], [400]).send({ from: ethereum.selectedAddress });
+}
+
+function setLastTxMsg(msg) {
+  var mmCurrentAccount = document.getElementById('mm-lastTxMsg');
+  mmCurrentAccount.innerHTML = msg;
 }

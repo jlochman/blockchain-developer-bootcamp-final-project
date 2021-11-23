@@ -19,7 +19,7 @@
  */
 
  var pkProvider = require("truffle-privatekey-provider");
- var privateKey = "35e2ad7dca410c557daf9c39fb7eb6d85043f55e75f1cd2e29a0b18922b59644";
+ var privateKey = "9e8c9115f7a13b431e311c9e354379be1a52ba37f34296153a9a6b35004a74a6";
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
