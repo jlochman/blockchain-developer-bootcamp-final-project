@@ -1,33 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Simple Dapp</title>
+
+  <link rel="stylesheet" href="bootstrap.css" />
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-  
+
 
 </head>
+
 <body>
-  <h1>This is a Dapp</h1>
-  <p>
-    Hello, World 12!
-  </p>
-  <div id="mm-detected"></div>
 
-  <!-- Connect to MetaMask Wallet -->
+  <div class="container">
 
-  <button id="mm-connect">Connect to MetaMask</button>
+    <h1>Marketplace</h1>
+    <div id="mm-detected"></div>
+    <!-- Connect to MetaMask Wallet -->
+    <button id="mm-connect" class="btn-light">Connect to MetaMask</button>
+    <!-- Display current address -->
+    <div id="mm-current-account"></div>
+    <div id="mm-current-account-balance"></div>
 
-  <!-- Display current address -->
+    <div class="row">
 
-  <div id="mm-current-account"></div>
+      <h2>Buy now</h2>
+
+      <div class="col-4-item">
+        <h3>mockNFT #0</h3>
+        <div>Price: 0.1 ETH</div>
+        </br>
+        <button>BUY</button>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #1</h3>
+        <div>Price: 0.2 ETH</div>
+        </br>
+        <button>CANCEL LISTING</button>
+      </div>
+
+    </div>
+    </br>
+
+    <div class="row">
+
+      <h2>Auction</h2>
+
+      <div class="col-4-item">
+        <h3>mockNFT #10</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Current Bid: 0.2 ETH </div>
+        <div>Ends: in 8 hours</div>
+        </br>
+        <input type="number" placeholder="Your Bid" />
+        <button>Place BID</button>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #11</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Current Bid: 0.2 ETH </div>
+        <div>Ends: in 8 hours</div>
+        </br>
+        <div>Your are winning</div>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #12</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Current Bid: 0.2 ETH </div>
+        <div>Ends: in 8 hours</div>
+        </br>
+        <div>This auctin is yours.</div>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #13</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Winning Bid: 0.2 ETH </div>
+        <div>Ended</div>
+        </br>
+        <button>Claim Reward</button>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #14</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Winning Bid: 0.2 ETH </div>
+        <div>Ended</div>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #15</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Current Bid: - </div>
+        <div>Ends: in 8 hours</div>
+        </br>
+        <button>Cancel Auction</button>
+      </div>
+
+      <div class="col-4-item">
+        <h3>mockNFT #16</h3>
+        <div>Start Price: 0.1 ETH</div>
+        <div>Current Bid: - </div>
+        <div>Ended</div>
+        </br>
+        <button>Cancel Auction</button>
+      </div>
+
+    </div>
+    </br>
+
+    <div class="row">
+      <h2>Your Items</h2>
+      <div class="col-4-item">
+        <h3>mockNFT #20</h3>
+        <div><b>Buy now:</b></div>
+        <div>
+          Price: <input type="number" placeholder="Price" />
+        </div>
+        <button>Place</button>
+        <div><b>Auction:</b></div>
+        <div>
+          Start Price: <input type="number" placeholder="Start Price" />
+        </div>
+        <div>
+          Duration [secs]: <input type="number" placeholder="Duration [secs]" />
+        </div>
+        <button>Place</button>
+      </div>
+    </div>
+    </br>
+
+  </div>
+
+  </br></br></br></br></br>
 
   <!-- Provide an input to change the contract text value -->
   <div>
-  <input id="ss-input-box" type="number" placeholder="Provide input"/>  
-</div>
+    <input id="ss-input-box" type="number" placeholder="Provide input" />
+  </div>
   <button id="ss-input-button">Submit Value</button>
 
   <!-- Read input from contract -->
@@ -35,6 +151,8 @@
     <button id="ss-get-value">Get Simple Storage value</button>
   </div>
   <div id="ss-display-value">Current Simple Storage Value: </div>
+
+
 
 </body>
 

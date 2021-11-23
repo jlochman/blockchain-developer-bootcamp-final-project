@@ -84,7 +84,10 @@ mmEnable.onclick = async () => {
   // grab mm-current-account
   // and populate it with the current address
   var mmCurrentAccount = document.getElementById('mm-current-account');
-  mmCurrentAccount.innerHTML = 'Current Account: ' + ethereum.selectedAddress
+  mmCurrentAccount.innerHTML = 'Account: ' + ethereum.selectedAddress;
+  
+  var mmCurrentAccountBalance = document.getElementById('mm-current-account-balance');
+  mmCurrentAccountBalance.innerHTML = 'Balance: ' + ((await web3.eth.getBalance(ethereum.selectedAddress)) * 1e-18) + ' ETH';
 }
 
 // grab the button for input to a contract:
