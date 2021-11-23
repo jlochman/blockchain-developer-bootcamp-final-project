@@ -60,7 +60,7 @@ contract MockNFT is ERC721, Ownable {
         require(creators.length == royalties.length, "Incorrect length");
         require(creators.length< 5, "Max 5 creators allowed");
         for (uint8 i =0; i < royalties.length; i++) {
-            require(royalties[i] < 500, "Single creator can get max 5%");
+            require(royalties[i] <= 500, "Single creator can get max 5%");
         }
 
         // remove current shares

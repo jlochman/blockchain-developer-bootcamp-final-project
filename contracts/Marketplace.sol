@@ -92,6 +92,7 @@ contract Marketplace is Ownable {
     * ============================ */
     function openAuction(MockNFT collection, uint256 tokenId, uint256 startPrice, uint256 auctionTimeSeconds) public payable onlyRegisteredCollections(collection) {
         require(collection.ownerOf(tokenId) == msg.sender, "sender is not token owner");
+        require(auctionTimeSeconds < 30 days,"auction time cannot be bigger than 30 days");
         require(collection.isApprovedForAll(msg.sender, address(this)), "collection is not approved for marketplace");
         require(msg.value >= _flatFee, "sender is not paying enough listing fee");
 

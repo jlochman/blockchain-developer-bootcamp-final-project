@@ -21,30 +21,23 @@
     <div id="mm-detected"></div>
     <!-- Connect to MetaMask Wallet -->
     <button id="mm-connect" class="btn-light">Connect to MetaMask</button>
+    </br>
+    <div>For Owner:</div>
+    <button id="mm-mint" class="btn-light">Mint</button>
+    <button id="mm-royalties" class="btn-light">Set Royalties</button>
     <!-- Display current address -->
     <div id="mm-current-account"></div>
     <div id="mm-current-account-balance"></div>
-
-    <div class="row">
-
-      <h2>Buy now</h2>
-
-      <div class="col-4-item">
-        <h3>mockNFT #0</h3>
-        <div>Price: 0.1 ETH</div>
-        </br>
-        <button>BUY</button>
-      </div>
-
-      <div class="col-4-item">
-        <h3>mockNFT #1</h3>
-        <div>Price: 0.2 ETH</div>
-        </br>
-        <button>CANCEL LISTING</button>
-      </div>
-
-    </div>
     </br>
+
+    <div id="buy-now-container" class="row"></div>
+    </br>
+
+    <div id="items-container" class="row"></div>
+    </br>
+
+    <!--
+    <div class="row" style="color: red;"><h3>Bellow not implemented</h3></div>
 
     <div class="row">
 
@@ -140,26 +133,10 @@
 
   </br></br></br></br></br>
 
-  <!-- Provide an input to change the contract text value -->
-  <div>
-    <input id="ss-input-box" type="number" placeholder="Provide input" />
-  </div>
-  <button id="ss-input-button">Submit Value</button>
-
-  <!-- Read input from contract -->
-  <div>
-    <button id="ss-get-value">Get Simple Storage value</button>
-  </div>
-  <div id="ss-display-value">Current Simple Storage Value: </div>
-
-
-
+  -->
+  
 </body>
 
-
-
-<!-- Had trouble and had to move the script down! -->
 <script src="dapp.js"></script>
-
 
 </html>

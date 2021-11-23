@@ -142,6 +142,14 @@ contract("Marketplace", function (accounts) {
       assert.isTrue(error);
     });
 
+    it("auction cannot be for a longer period than 30 days", async function () {
+      var error = false;
+      try {
+        await marketplace.openAuction(mockNft.address, 0, 60 * 60 * 24 * 31, 60, { value: 50000 });
+      } catch (err) { error = true; }
+      assert.isTrue(error);
+    });
+
     it("only token owner can create auction", async function () {
       var error = false;
       try {
