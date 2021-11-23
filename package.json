@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "openzeppelin-solidity": "4.3.3"
+    "openzeppelin-solidity": "4.3.3",
+    "truffle-privatekey-provider": "^1.2.0"
   },
   "name": "blockchain-developer-bootcamp-final-project",
   "description": "With the booming popularity of NFTs, I'd like to create a simple NFT marketplace.",
