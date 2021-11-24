@@ -50,7 +50,7 @@ To deploy
 - Ropsten `truffle deploy --network ropsten`
 
 ## Project Frontend
-- Hosted on [https://mock-nft-marketplace.netlify.app/]()
+- Hosted on [netlify](https://mock-nft-marketplace.netlify.app/)
 - How to interact explained in `manual.pdf`
 
 ## My Ethereum Account
