@@ -52,7 +52,7 @@ contract Marketplace is Ownable {
         _;
     }
 
-    // fee - fee in basis points paid for each auction (fee=100 means 1%)
+    /// @notice registers collection with fee, which is paid to marketplace (fee=100 means 1%)
     function registerCollection(MockNFT collection, uint256 fee) public onlyOwner validFee(fee) validCollection(collection) {
         CollectionInfo storage collectionInfo = _collections[address(collection)];
         collectionInfo.collection = collection;
@@ -66,6 +66,7 @@ contract Marketplace is Ownable {
         return _collections[address(collection)].fee > 0;
     }
 
+    /// @notice sets collection fee (fee=100 means 1%)
     function setCollectionFee(MockNFT collection, uint256 fee) public onlyOwner validFee(fee) onlyRegisteredCollections(collection) {
         if (_collections[address(collection)].fee != fee) {
             _collections[address(collection)].fee=fee;
@@ -77,7 +78,7 @@ contract Marketplace is Ownable {
         return _collections[address(collection)].fee;
     }
 
-    // flatFee - fee in wei paid for each listing
+    /// @notice sets fee which is paid to marketplace for each listing
     function setFlatListingFee(uint256 flatFee) public onlyOwner {
         _flatFee = flatFee;
         emit FlatFeeSet(flatFee);
@@ -90,6 +91,8 @@ contract Marketplace is Ownable {
     /** ============================
     * ===== AUCTION
     * ============================ */
+    /// @notice opens auctin for given tokenId of given collection. Auction starts at startPrice and lasts auctionTimeSeconds,
+    /// which cannot be longer than 30 days.
     function openAuction(MockNFT collection, uint256 tokenId, uint256 startPrice, uint256 auctionTimeSeconds) public payable onlyRegisteredCollections(collection) {
         require(collection.ownerOf(tokenId) == msg.sender, "sender is not token owner");
         require(auctionTimeSeconds < 30 days,"auction time cannot be bigger than 30 days");
@@ -113,16 +116,18 @@ contract Marketplace is Ownable {
         collection.transferFrom(msg.sender, address(this), tokenId);
         emit AuctionCreated(collection, tokenId, startPrice, auctionTimeSeconds, msg.sender);
     }
-
+    /// @notice checks whether auction for given tokenId of given collection is opened
     function auctionOpened(MockNFT collection, uint256 tokenId) public view returns (bool) {
         return _collections[address(collection)].auctions[tokenId].startPrice > 0;
     }
 
+    /// @notice gets the size of the current auction bid
     function getCurrentBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
         require(auctionOpened(collection, tokenId), "auction must be opened");
         return _collections[address(collection)].auctions[tokenId].bidderValue;   
     }
 
+    /// @notice minimal bid which can be accepted by opened auction 
     function getMinimalBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
         require(auctionOpened(collection, tokenId), "auction must be opened");
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
@@ -133,11 +138,13 @@ contract Marketplace is Ownable {
         return minBid;
     }
 
+    /// @notice current auction bid
     function getAuctionBid(MockNFT collection, uint256 tokenId) public view returns (uint256) {
         require(auctionOpened(collection, tokenId), "auction must be opened");
         return _collections[address(collection)].auctions[tokenId].bidderValue;   
     }
 
+    /// @notice information about auction
     function getAuction(MockNFT collection, uint256 tokenId) public view 
         returns (uint256 started, uint256 ends, uint256 startPrice,  address bidder, uint256 bidderValue) {
             require(auctionOpened(collection, tokenId), "auction must be opened");
@@ -149,6 +156,7 @@ contract Marketplace is Ownable {
             bidderValue = auctionInfo.bidderValue;
     }
 
+    /// @notice cancels auction
     function cancelAuction(MockNFT collection, uint256 tokenId) public onlyRegisteredCollections(collection) {
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
         require(auctionInfo.tokenOwner == msg.sender, "only auction creator can cancel it");
@@ -160,6 +168,7 @@ contract Marketplace is Ownable {
         emit AuctionCancelled(collection, tokenId, msg.sender);
     }
 
+    /// @notice places bid on an existing auction. If there is an existing bid, it's returned to its bidder
     function placeBid(MockNFT collection, uint256 tokenId) public payable onlyRegisteredCollections(collection) {
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
         require(auctionInfo.started > 0 && block.timestamp < auctionInfo.ends, "auction is not active");
@@ -177,6 +186,7 @@ contract Marketplace is Ownable {
         emit BidPlaced(collection, tokenId, msg.sender, msg.value);
     }
 
+    /// @notice winnner of the auction can claim his reward
     function claimReward(MockNFT collection, uint256 tokenId) public payable {
         AuctionInfo memory auctionInfo = _collections[address(collection)].auctions[tokenId];
         require(block.timestamp > auctionInfo.ends, "auction hasn't ended yet");

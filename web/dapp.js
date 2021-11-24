@@ -698,7 +698,7 @@ const mockNftABI =
       "payable": true
     }
   ];
-const mockNftAddress = '0xF55f31f5f7962863dD52AF7965dB6dC09f708F5e';
+const mockNftAddress = '0x816f93C8f9a5258F0a732D74de3E579E4611354D';
 
 window.addEventListener('load', function () {
   let mmDetected = document.getElementById('mm-detected')
@@ -767,15 +767,13 @@ async function createListing(tokenId) {
 
 const mmEnable = document.getElementById('mm-connect');
 mmEnable.onclick = async () => {
-  
-  
   refreshOffers();
 }
 
 async function refreshOffers() {
   await ethereum.request({ method: 'eth_requestAccounts' })
   var web3 = new Web3(window.ethereum)
-  
+
   var mmCurrentAccount = document.getElementById('mm-current-account');
   mmCurrentAccount.innerHTML = 'Account: ' + ethereum.selectedAddress;
   var mmCurrentAccountBalance = document.getElementById('mm-current-account-balance');

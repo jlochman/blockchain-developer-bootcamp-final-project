@@ -50,12 +50,16 @@ contract MockNFT is ERC721, Ownable {
         }
     }
 
+    /// @notice mints token with consecutive id to given address
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
     }
 
+    /// @notice sets creators to obtain royalties [creator1, creator2], [100, 200] means 
+    /// creator1 obtains 1% royalty and creator2 obtains 2% royalty
+    /// max 5 creators allowed, max 5% royalty per creator
     function setRoyalties(address[] memory creators, uint16[] memory royalties) public onlyOwner {
         require(creators.length == royalties.length, "Incorrect length");
         require(creators.length< 5, "Max 5 creators allowed");
@@ -85,7 +89,8 @@ contract MockNFT is ERC721, Ownable {
     function getRoyalties() public view returns (uint16) {
         return _royaltiesSum;
     }
-
+    
+    /// @notice puts tokenId for sale at sellPrice
     function setOfferPrice(uint256 tokenId, uint256 sellPrice) public onlyTokenOwner(tokenId) {
         require(sellPrice > 0, "sellPrice must be > 0");
             _tokenOffers[tokenId]=sellPrice;
@@ -100,6 +105,7 @@ contract MockNFT is ERC721, Ownable {
         delete _tokenOffers[tokenId];
     }
 
+    /// @notice buy offer of tokenId at its price
     function acceptOffer(uint256 tokenId) public payable offerExists(tokenId) {
         require(msg.value >= _tokenOffers[tokenId], "not enough assets paid");
         require(msg.sender != ownerOf(tokenId), "buyer and seller must be different");
@@ -124,6 +130,7 @@ contract MockNFT is ERC721, Ownable {
         _transfer(ownerOf(tokenId), msg.sender, tokenId);
     }
 
+    /// @notice splits given reward among creators
     function rewardCreators(uint256 reward) public payable {
         require(_royaltiesSum != 0, "no creators set");
 
@@ -141,7 +148,8 @@ contract MockNFT is ERC721, Ownable {
         emit RyoaltyPayment(_creators[0], reward - paid);
     }
 
-    function _transfer(address from,address to,uint256 tokenId) internal override {
+    /// @notice modifies parent method to cancel token offer after token is transfered
+    function _transfer(address from, address to, uint256 tokenId) internal override {
         super._transfer(from, to, tokenId);
         delete _tokenOffers[tokenId];
     } 

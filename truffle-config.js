@@ -19,12 +19,15 @@
  */
 
  var pkProvider = require("truffle-privatekey-provider");
- var privateKey = "9e8c9115f7a13b431e311c9e354379be1a52ba37f34296153a9a6b35004a74a6";
+// var privateKey = "9e8c9115f7a13b431e311c9e354379be1a52ba37f34296153a9a6b35004a74a6";
+// var HDWalletProvider = require("truffle-hdwallet-provider");
+// const MNEMONIC = 'YOUR WALLET KEY';
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
-//
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const HDWalletProvider = require('truffle-hdwallet-provider');
+
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
+console.log(mnemonic);
 
 module.exports = {
   /**
@@ -60,14 +63,14 @@ module.exports = {
     // },
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-    // ropsten: {
-    // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
-    // network_id: 3,       // Ropsten's id
-    // gas: 5500000,        // Ropsten has a lower block limit than mainnet
-    // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-    // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-    // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-    // },
+    ropsten: {
+     provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/692046541fa84ef69836a9d24f4a7d56`),
+     network_id: 3,       // Ropsten's id
+     gas: 5500000,        // Ropsten has a lower block limit than mainnet
+     confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+     timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+     skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
